@@ -1,6 +1,7 @@
 http = {}
 http.cookie_jar = 'cookies.txt'
 http.default_referer = ''
+http.xsrf_token = 'pRej2u5Q-ZfhBC73dgvscN-4AxacYkgWNH-w'
 
 function http.get(url, referer)
     referer = referer or http.default_referer
@@ -18,6 +19,7 @@ function http.post(url, content, referer)
     local handle = io.popen('curl -q -k -s -b ' .. http.cookie_jar .. ' -c ' .. http.cookie_jar .. ' -X POST '
         .. '-e "' .. referer .. '" '
         .. '-H "Content-Type: application/x-www-form-urlencoded" '
+        .. '-H "X-XSRF-TOKEN: ' .. http.xsrf_token .. '" '
         .. '-m 10 "' .. url .. '" -d "' .. http.urlencode(content) .. '"', 'r')
     local response = handle:read('*a')
     handle:close()
