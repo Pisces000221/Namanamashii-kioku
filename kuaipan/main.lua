@@ -4,6 +4,7 @@ inspect = inspect or require('./libs/inspect')
 
 http.default_referer = 'http://web.kuaipan.cn/n/drive/files'
 
+local dir_ct, file_ct = 0, 0
 local files = {}
 local last_save = 0
 local save_interval = 10
@@ -18,8 +19,9 @@ function file_info_append(path, id, isdir, size, ctime, mtime)
         path = path, id = id, isdir = isdir, size = size, ctime = ctime, mtime = mtime,
     }
     files[#files + 1] = record
+    if is_dir then dir_ct = dir_ct + 1 else file_ct = file_ct + 1 end
     if #files > last_save + save_interval then
-        f = io.open('dirlist.txt', 'a')
+        f = io.open('dirlist.csv', 'a')
         for i = last_save + 1, #files do
             f:write(i, ',', serialize(files[i]))
         end
@@ -29,6 +31,7 @@ function file_info_append(path, id, isdir, size, ctime, mtime)
 end
 
 function ls(id, depth)
+    if depth > 1 then return end
     if id ~= nil then id = tostring(id) else id = '' end
     local res = JSON:decode(http.post('http://web.kuaipan.cn/n/drive/getFiles', { id = id, sortby = '', cc = 'false' }))
     if res[1] ~= nil and res[1].docs ~= nil then
@@ -59,6 +62,9 @@ function ls(id, depth)
     end
 end
 
+local start_time = os.time()
 local tree = ls(nil, 0)
 print('Directory listing finished. Result is as follows.')
-print(inspect(tree))
+print(dir_ct .. ' directory(-ies) and ' .. file_ct .. ' file(s) in total')
+print('Elapsed time: ' .. tostring((os.time() - start_time) / 1000) .. ' second(s)')
+print('All lists saved to dirlist.csv.')
