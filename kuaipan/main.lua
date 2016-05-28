@@ -21,7 +21,6 @@ function file_info_append(path, id, isdir, size, ctime, mtime)
     if #files > last_save + save_interval then
         f = io.open('dirlist.txt', 'a')
         for i = last_save + 1, #files do
-            --f:write(i, ' ', inspect(files[i], { newline = '', indent = '' }), '\n')
             f:write(i, ',', serialize(files[i]))
         end
         last_save = #files
@@ -29,7 +28,7 @@ function file_info_append(path, id, isdir, size, ctime, mtime)
     end
 end
 
-function ls(id)
+function ls(id, depth)
     if id ~= nil then id = tostring(id) else id = '' end
     local res = JSON:decode(http.post('http://web.kuaipan.cn/n/drive/getFiles', { id = id, sortby = '', cc = 'false' }))
     if res[1] ~= nil and res[1].docs ~= nil then
@@ -45,8 +44,12 @@ function ls(id)
         end
         for i = 1, #list do
             if list[i].type == 'folder' then
-                print('Retrieving directory list: (' .. id .. ') ' .. res[1].path .. '/' .. list[i].name)
-                ls(list[i].id)
+                if depth < 3 then
+                    print('Retrieving directory list: (' .. id .. ') ' .. res[1].path .. '/' .. list[i].name)
+                elseif depth == 3 then
+                    print('Retrieving directory list: (' .. id .. ') ' .. res[1].path .. '/' .. list[i].name .. '/...')
+                end
+                ls(list[i].id, depth + 1)
             end
         end
         return ret
@@ -56,6 +59,6 @@ function ls(id)
     end
 end
 
-local tree = ls(nil, '/')
+local tree = ls(nil, 0)
 print('Directory listing finished. Result is as follows.')
 print(inspect(tree))
