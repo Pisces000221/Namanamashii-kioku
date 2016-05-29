@@ -1,7 +1,7 @@
 http = {}
 http.cookie_jar = 'cookies.txt'
 http.default_referer = ''
-http.xsrf_token = 'jsPTvIiZ-OKwTu6htxE4dMjgxkqZP-w8cOhM'
+http.xsrf_token = ''
 
 function http.get(url, referer)
     referer = referer or http.default_referer

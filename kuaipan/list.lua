@@ -3,8 +3,9 @@ JSON = JSON or require('./libs/JSON')
 inspect = inspect or require('./libs/inspect')
 
 http.default_referer = 'http://web.kuaipan.cn/n/drive/files'
+http.xsrf_token = 'jsPTvIiZ-OKwTu6htxE4dMjgxkqZP-w8cOhM'
 
-local list_file = 'dirlist.csv'
+local list_file = arg[1] or 'dirlist.csv'
 local dir_ct, file_ct = 0, 0
 local files = {}
 local last_save = 0
@@ -62,8 +63,9 @@ function ls(id, depth)
     end
 end
 
+print('The file to save to is [' .. list_file .. '].')
 local start_time = os.time()
-local tree = ls(nil, 0)
+ls(nil, 0)
 print('Directory listing finished. Result is as follows.')
 print(dir_ct .. ' directory(-ies) and ' .. file_ct .. ' file(s) in total')
 print('Elapsed time: ' .. tostring((os.time() - start_time) / 1000) .. ' second(s)')
