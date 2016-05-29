@@ -10,7 +10,7 @@ local dir_ct, file_ct = 0, 0
 local files = {}
 function deserialize(record)
     local ret = {}
-    record:gsub('([^,+])', function (s) ret[#ret + 1] = s end)
+    record:gsub('([^,]+)', function (s) ret[#ret + 1] = s end)
     return table.unpack(ret)
 end
 function file_info_append(num, id, size, ctime, mtime, path)
@@ -31,12 +31,12 @@ function read_file()
 end
 
 print('The file to read from is [' .. list_file .. '].')
-local start_time = os.time()
+local start_time = os.clock()
 read_file()
 print(dir_ct .. ' directory(-ies) and ' .. file_ct .. ' file(s) in total. Please confirm.')
-print('Elapsed time: ' .. tostring((os.time() - start_time) / 1000) .. ' second(s)')
+print('Elapsed time: ' .. tostring(os.clock() - start_time) .. ' second(s)')
 
 start_time = os.time()
 print('--------')
 print('Starting downloads.')
-print('Elapsed time: ' .. tostring((os.time() - start_time) / 1000) .. ' second(s)')
+print('Elapsed time: ' .. tostring(os.time() - start_time) .. ' second(s)')
