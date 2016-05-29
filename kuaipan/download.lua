@@ -15,7 +15,6 @@ function deserialize(record)
 end
 local byte_unit = { ['B'] = 1, ['KB'] = 1<<10, ['MB'] = 1<<20, ['GB'] = 1<<30, ['TB'] = 1<<40 }
 function parse_size(s)
-    if s == 'DIR' then return s end
     local ret
     s:gsub('(.+) (.+)', function (x, y) ret = tonumber(x) * byte_unit[y] end)
     return ret
@@ -30,13 +29,14 @@ function format_size(s)
     return string.format('%.2f %s', num, unit)
 end
 function file_info_append(num, id, size, ctime, mtime, path)
-    size = parse_size(size)
-    local record = {
-        path = path, id = id, size = size, ctime = ctime, mtime = mtime,
-    }
-    files[#files + 1] = record
     if size == 'DIR' then dir_ct = dir_ct + 1
-    else file_ct = file_ct + 1; tot_size = tot_size + size end
+    else
+        size = parse_size(size)
+        files[#files + 1] = {
+            path = path, id = id, size = size, ctime = ctime, mtime = mtime,
+        }
+        file_ct = file_ct + 1; tot_size = tot_size + size
+    end
 end
 function read_file()
     local f = io.open(list_file, 'r')
