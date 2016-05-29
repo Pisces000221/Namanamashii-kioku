@@ -48,6 +48,17 @@ function read_file()
     f:close()
 end
 
+function download_one(id, path)
+    http.download('http://web.kuaipan.cn/n/s3/getDownload?id=' .. id, path)
+end
+function start_downloads()
+    --local i
+    --for i = 1, #files do
+    --    download_one(files[i].id, files[i].path)
+    --end
+    download_one(files[2].id, files[2].path:sub(2))
+end
+
 print('The file to read from is [' .. list_file .. '].')
 local start_time = os.clock()
 read_file()
@@ -59,4 +70,5 @@ print('Elapsed time: ' .. tostring(os.clock() - start_time) .. ' second(s)')
 start_time = os.time()
 print('--------')
 print('Starting downloads.')
+start_downloads()
 print('Elapsed time: ' .. tostring(os.time() - start_time) .. ' second(s)')

@@ -28,9 +28,8 @@ end
 
 function http.download(url, path, referer)
     referer = referer or http.default_referer
-    local handle = io.popen('curl -q -k -s -b ' .. http.cookie_jar .. ' -c ' .. http.cookie_jar .. ' -X GET '
-        .. '-e "' .. referer .. '" '
-        .. '-o "' .. path .. '" "' .. url .. '"', 'r')
+    local handle = io.popen('wget --load-cookies ' .. http.cookie_jar .. ' -q '
+        .. '-O "' .. path .. '" "' .. url .. '"', 'r')
     handle:close()
 end
 
