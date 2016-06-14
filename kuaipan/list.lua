@@ -9,7 +9,7 @@ local list_file = arg[1] or 'dirlist.csv'
 local dir_ct, file_ct = 0, 0
 local files = {}
 local last_save = 0
-local save_interval = 10
+local save_interval = 1000
 function serialize(record)
     local s = record.id .. ','
     if record.isdir then s = s .. 'DIR' else s = s .. record.size end
