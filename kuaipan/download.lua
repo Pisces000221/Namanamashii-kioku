@@ -3,10 +3,10 @@ JSON = JSON or require('./libs/JSON')
 inspect = inspect or require('./libs/inspect')
 
 http.default_referer = 'http://web.kuaipan.cn/n/drive/files'
-http.xsrf_token = 'jsPTvIiZ-OKwTu6htxE4dMjgxkqZP-w8cOhM'
+http.xsrf_token = 'BW1BHAjD-XHu12Nq96XqSUsnz6qVYwPZZDnE'
 
 local list_file = arg[1] or 'dirlist.csv'
-local base_dir = arg[2] or ''
+local base_dir = arg[2] or './downloads'
 
 local dirs, files = {}, {}
 local tot_size = 0
@@ -66,7 +66,7 @@ function prepare_downloads()
     local i
     -- NOTE: Can also be replaced with lfs
     -- But here we just use os.execute for the sake of convenience
-    local s = 'mkdir ' .. base_dir
+    local s = 'mkdir "' .. base_dir .. '"'
     for i = 1, #dirs do
         s = s .. ' "' .. base_dir .. cmd_escape(dirs[i].path) .. '"'
         if i % 100 == 0 then os.execute(s); s = 'mkdir' end
@@ -74,11 +74,14 @@ function prepare_downloads()
     if s ~= 'mkdir' then os.execute(s) end
 end
 function start_downloads()
-    --local i
-    --for i = 1, #files do
-    --    download_one(files[i].id, files[i].path)
-    --end
-    download_one(files[2].id, files[2].path)
+    local i
+    local est_size = 0
+    for i = 1, #files do
+        est_size = est_size + files[i].size
+        print(string.format('Downloading: (%d/%d %.2f%% %s) %s',
+            i, #files, (est_size / tot_size) * 100, format_size(files[i].size), files[i].path))
+        download_one(files[i].id, files[i].path)
+    end
 end
 
 print('The file to read from is [' .. list_file .. '].')

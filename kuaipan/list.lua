@@ -3,7 +3,7 @@ JSON = JSON or require('./libs/JSON')
 inspect = inspect or require('./libs/inspect')
 
 http.default_referer = 'http://web.kuaipan.cn/n/drive/files'
-http.xsrf_token = 'jsPTvIiZ-OKwTu6htxE4dMjgxkqZP-w8cOhM'
+http.xsrf_token = 'BW1BHAjD-XHu12Nq96XqSUsnz6qVYwPZZDnE'
 
 local list_file = arg[1] or 'dirlist.csv'
 local dir_ct, file_ct = 0, 0
