@@ -92,7 +92,7 @@ print('Elapsed time: ' .. tostring(os.clock() - start_time) .. ' second(s)')
 
 print('------')
 print('Comparing diff')
-local warnings_cnt = 0
+local warnings_cnt, notfound_cnt = 0, 0
 for i = 1, #files do
     local loc_sz = loc_map[files[i].path]
     if loc_sz == nil then loc_sz = -1 end
@@ -101,6 +101,10 @@ for i = 1, #files do
         print('File (serial = ' .. i .. '): ' .. files[i].path)
         print('Expected size: ' .. files[i].size .. '  Local file size: ' .. loc_sz)
         warnings_cnt = warnings_cnt + 1
-        if warnings_cnt >= 20 then break end
+        -- if warnings_cnt >= 20 then break end
+        if loc_sz == -1 then notfound_cnt = notfound_cnt + 1 end
     end
 end
+print('------')
+print('Total diffs: ' .. warnings_cnt .. ' of which ' .. notfound_cnt .. ' is/are "not found"')
+print('Lists: expected ' .. #files .. ' / found ' .. #loc_files)
