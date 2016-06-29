@@ -7,8 +7,9 @@ http.xsrf_token = 'TjdGbwwp-G28T-JpThSFdDONslPdBG5Q5lHo'
 
 local list_file = arg[1] or 'dirlist.csv'
 local base_dir = arg[2] or './downloads'
-local modulus = tonumber(arg[3]) or 1
-local remainder = tonumber(arg[4]) or 0
+local start = tonumber(arg[3]) or 1
+local modulus = tonumber(arg[4]) or 1
+local remainder = tonumber(arg[5]) or 0
 
 local dirs, files = {}, {}
 local tot_size = 0
@@ -79,7 +80,7 @@ local start_time
 function start_downloads()
     local i, last_rec = 0, 0
     local est_size = 0
-    for i = 1, #files do if i % modulus == remainder then
+    for i = 1, #files do if i >= start and i % modulus == remainder then
         est_size = est_size + files[i].size
         print(string.format('Downloading: (%d/%d %.2f%% %s) %s',
             i, #files, (est_size / tot_size) * 100, format_size(files[i].size), files[i].path))
@@ -88,6 +89,8 @@ function start_downloads()
             last_rec = i
         end
         download_one(files[i].id, files[i].path)
+    else
+        est_size = est_size + files[i].size
     end end
 end
 
